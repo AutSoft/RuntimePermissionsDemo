@@ -2,6 +2,7 @@ package com.example.gerlotdev.runtimepermissiondemo;
 
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -17,10 +18,15 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
 
+import java.io.File;
+
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+
+	public static final String directoryName = "HATEVER";
 
 	private GoogleApiClient googleApiClient;
 
+	private FloatingActionButton fab;
 	private Button buttonDoYourThing;
 	private Button buttonDoWhatever;
 
@@ -39,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 					.build();
 		}
 
-		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+		fab = (FloatingActionButton) findViewById(R.id.fab);
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -54,8 +60,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 		buttonDoYourThing.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				showMessage(getString(R.string.do_your_thing));
-				googleApiClient.connect();
+				if (googleApiClient.isConnected()) {
+					getLastLocation();
+				} else {
+					googleApiClient.connect();
+				}
 			}
 		});
 
@@ -64,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 			@Override
 			public void onClick(View v) {
 				showMessage(getString(R.string.do_whatever));
+				createWhateverDirectory();
 			}
 		});
 
@@ -77,28 +87,42 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
 	@Override
 	public void onConnected(@Nullable Bundle bundle) {
-		Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(
-				googleApiClient);
-		if (lastLocation != null) {
-			showMessage("Lat: " + lastLocation.getLatitude() + ", Lon: " + lastLocation.getLongitude());
-			googleApiClient.disconnect();
-		}
-
+		getLastLocation();
 	}
 
 	@Override
 	public void onConnectionSuspended(int i) {
-		showMessage("Google API Connection Suspended");
+		showMessage(getString(R.string.google_api_connection));
 	}
 
 	@Override
 	public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-		showMessage("Google API Connection Failed");
+		showMessage(getString(R.string.google_api_connection_failed));
 	}
 
+	private void getLastLocation() {
+		Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(
+				googleApiClient);
+		if (lastLocation != null) {
+			showMessage(String.format(getResources().getString(R.string.lat_long), lastLocation.getLatitude(), lastLocation.getLongitude()));
+			googleApiClient.disconnect();
+		} else {
+			showMessage(getString(R.string.could_not_get_last_location));
+		}
+	}
+
+	private void createWhateverDirectory() {
+		File file = new File(Environment.getExternalStoragePublicDirectory(
+				Environment.DIRECTORY_DOWNLOADS), directoryName);
+		if (!file.mkdirs()) {
+			showMessage(getString(R.string.directory_not_created));
+		} else {
+			showMessage(String.format(getResources().getString(R.string.directory_created), directoryName));
+		}
+	}
 
 	private void showMessage(String message) {
-		Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG);
+		Snackbar snackbar = Snackbar.make(fab, message, Snackbar.LENGTH_LONG);
 		snackbar.getView().setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
 		snackbar.show();
 	}

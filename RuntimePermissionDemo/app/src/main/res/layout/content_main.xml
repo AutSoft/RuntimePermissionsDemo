@@ -39,7 +39,7 @@
 		app:srcCompat="@drawable/logo_new_mobile"
 		android:layout_marginBottom="60dp"
 		android:id="@+id/imageView"
-		android:background="@android:color/background_light"
+		android:alpha="0.5"
 		android:layout_alignParentBottom="true"
 		android:layout_centerHorizontal="true"/>
 </RelativeLayout>
