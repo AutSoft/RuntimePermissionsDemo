@@ -4,4 +4,49 @@
 
 	<string name="button_do_your_thing">Do Your Thing</string>
 	<string name="button_do_whatever">Do Whatever</string>
+
+
+	<string name="dangerous_permissions">Dangerous Permissions</string>
+
+	<!-- CALENDAR -->
+	<string name="permission_read_calendar">READ_CALENDAR</string>
+	<string name="permission_write_calendar">WRITE_CALENDAR</string>
+
+	<!-- CAMERA -->
+	<string name="permission_camera">CAMERA</string>
+
+	<!-- CONTACTS -->
+	<string name="permission_read_contacts">READ_CONTACTS</string>
+	<string name="permission_write_contacts">WRITE_CONTACTS</string>
+
+	<!-- LOCATION -->
+	<string name="permission_access_fine_location">ACCESS_FINE_LOCATION</string>
+	<string name="permission_access_coarse_location">ACCESS_COARSE_LOCATION</string>
+
+	<!-- MICROPHONE -->
+	<string name="permission_record_audio">RECORD_AUDIO</string>
+
+	<!-- PHONE -->
+	<string name="permission_read_phone_state">READ_PHONE_STATE</string>
+	<string name="permission_call_phone">CALL_PHONE</string>
+	<string name="permission_read_call_log">READ_CALL_LOG</string>
+	<string name="permission_write_call_log">WRITE_CALL_LOG</string>
+	<string name="permission_add_voicemail">ADD_VOICEMAIL</string>
+	<string name="permission_use_sip">USE_SIP</string>
+	<string name="permission_process_outgoing_calls">PROCESS_OUTGOING_CALLS</string>
+
+	<!-- SENSORS -->
+	<string name="permission_body_sensors">BODY_SENSORS</string>
+
+	<!-- SMS -->
+	<string name="permission_send_sms">SEND_SMS</string>
+	<string name="permission_receive_sms">RECEIVE_SMS</string>
+	<string name="permission_read_sms">READ_SMS</string>
+	<string name="permission_receive_wap_push">RECEIVE_WAP_PUSH</string>
+	<string name="permission_receive_mms">RECEIVE_MMS</string>
+
+	<!-- STORAGE -->
+	<string name="permission_read_external_storage">READ_EXTERNAL_STORAGE</string>
+	<string name="permission_write_external_storage">WRITE_EXTERNAL_STORAGE</string>
+
 </resources>
