@@ -1,4 +1,7 @@
 <resources>
 	<string name="app_name">Runtime Permission Demo</string>
 	<string name="action_settings">Settings</string>
+
+	<string name="button_do_your_thing">Do Your Thing</string>
+	<string name="button_do_whatever">Do Whatever</string>
 </resources>
