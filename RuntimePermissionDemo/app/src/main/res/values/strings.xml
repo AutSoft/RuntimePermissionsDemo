@@ -48,5 +48,7 @@
 	<!-- STORAGE -->
 	<string name="permission_read_external_storage">READ_EXTERNAL_STORAGE</string>
 	<string name="permission_write_external_storage">WRITE_EXTERNAL_STORAGE</string>
+	<string name="do_whatever">Do Whatever</string>
+	<string name="do_your_thing">Do Your Thing</string>
 
 </resources>

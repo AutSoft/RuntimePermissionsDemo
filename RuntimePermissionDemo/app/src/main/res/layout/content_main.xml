@@ -18,8 +18,8 @@
 		android:text="@string/button_do_whatever"
 		android:layout_width="wrap_content"
 		android:layout_marginTop="16dp"
-		android:id="@+id/button"
-		android:layout_below="@+id/button2"
+		android:id="@+id/buttonDoWhatever"
+		android:layout_below="@+id/buttonDoYourThing"
 		android:layout_alignParentEnd="true"
 		android:layout_alignParentStart="true"
 		android:layout_height="60dp"/>
@@ -27,7 +27,7 @@
 	<Button
 		android:text="@string/button_do_your_thing"
 		android:layout_width="wrap_content"
-		android:id="@+id/button2"
+		android:id="@+id/buttonDoYourThing"
 		android:layout_height="60dp"
 		android:layout_alignParentTop="true"
 		android:layout_alignParentStart="true"
