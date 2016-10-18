@@ -92,13 +92,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 						MainActivityPermissionsDispatcher.grantAccessCoarseLocationPermissionWithCheck(MainActivity.this);
 					} else {
 						new AlertDialog.Builder(MainActivity.this)
-								.setMessage("You will need the Location permission to use this feature.")
+								.setMessage(R.string.need_location_permission)
 								.setPositiveButton(R.string.action_request, new DialogInterface.OnClickListener() {
 									@Override
 									public void onClick(DialogInterface dialog, int which) {
 										MainActivityPermissionsDispatcher.grantAccessCoarseLocationPermissionWithCheck(MainActivity.this);
 									}
 								})
+								.setNegativeButton(R.string.action_cancel, null)
 								.show();
 					}
 				}
@@ -118,13 +119,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 						MainActivityPermissionsDispatcher.grantWriteExternalStoragePermissionWithCheck(MainActivity.this);
 					} else {
 						new AlertDialog.Builder(MainActivity.this)
-								.setMessage("You will need the Files permission to use this feature.")
+								.setMessage(R.string.need_files_permission)
 								.setPositiveButton(R.string.action_request, new DialogInterface.OnClickListener() {
 									@Override
 									public void onClick(DialogInterface dialog, int which) {
 										MainActivityPermissionsDispatcher.grantWriteExternalStoragePermissionWithCheck(MainActivity.this);
 									}
 								})
+								.setNegativeButton(R.string.action_cancel, null)
 								.show();
 					}
 				}
@@ -218,17 +220,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
 	@OnShowRationale(Manifest.permission.ACCESS_COARSE_LOCATION)
 	void showRationaleForAccessCoarseLocation(final PermissionRequest request) {
-		showRationaleDialog(getString(R.string.rationale_access_coarse_location), new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				request.proceed();
-			}
-		}, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				request.cancel();
-			}
-		});
+		new AlertDialog.Builder(MainActivity.this)
+				.setMessage(R.string.need_location_permission)
+				.setPositiveButton(R.string.action_request, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						request.proceed();
+					}
+				})
+				.setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						request.cancel();
+					}
+				})
+				.show();
 	}
 
 	@NeedsPermission(Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -278,17 +284,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
 	@OnShowRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 	void showRationaleForWriteExternalStorage(final PermissionRequest request) {
-		showRationaleDialog(getString(R.string.rationale_write_external_storage), new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				request.proceed();
-			}
-		}, new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				request.cancel();
-			}
-		});
+		new AlertDialog.Builder(MainActivity.this)
+				.setMessage(R.string.need_files_permission)
+				.setPositiveButton(R.string.action_request, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						request.proceed();
+					}
+				})
+				.setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						request.cancel();
+					}
+				})
+				.show();
 	}
 
 	@NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -299,8 +309,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 	@OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 	void onWriteExternalStoragePermissionDenied() {
 		showMessage(getString(R.string.permission_denied));
-
-		buttonDoWhatever.setEnabled(false);
 	}
 
 	@OnNeverAskAgain(Manifest.permission.WRITE_EXTERNAL_STORAGE)

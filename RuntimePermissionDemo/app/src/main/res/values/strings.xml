@@ -63,5 +63,7 @@
 	<string name="permission_never_ask">permission never ask</string>
 	<string name="need_to_grant_location_permission">You need to grant the Location permission manually in the app settings.</string>
 	<string name="action_go_to_app_settings">Go to App Settings</string>
+	<string name="need_location_permission">You will need the Location permission to use this feature.</string>
+	<string name="need_files_permission">You will need the Files permission to use this feature.</string>
 
 </resources>
