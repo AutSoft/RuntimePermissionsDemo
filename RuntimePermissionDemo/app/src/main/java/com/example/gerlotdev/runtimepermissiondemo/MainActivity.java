@@ -2,6 +2,7 @@ package com.example.gerlotdev.runtimepermissiondemo;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Environment;
@@ -37,7 +38,7 @@ import permissions.dispatcher.RuntimePermissions;
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
 	public static final String directoryName = "WHATEVER";
-	public static final String KEY_NEVER_ASK_COARSE_LOCATION = "COARSE_LOCATION";
+	public static final String KEY_NEVER_ASK_ACCESS_COARSE_LOCATION = "ACCESS_COARSE_LOCATION";
 	public static final String KEY_NEVER_ASK_WRITE_EXTERNAL_STORAGE = "WRITE_EXTERNAL_STORAGE";
 
 	private GoogleApiClient googleApiClient;
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 					grantAccessCoarseLocationPermission();
 				} else {
 					boolean shouldShowRationale = PermissionUtils.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION);
-					boolean neverAsk = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).getBoolean(KEY_NEVER_ASK_COARSE_LOCATION, false);
+					boolean neverAsk = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).getBoolean(KEY_NEVER_ASK_ACCESS_COARSE_LOCATION, false);
 					if (shouldShowRationale || neverAsk || !showPrimerDialogForYourThing) {
 						MainActivityPermissionsDispatcher.grantAccessCoarseLocationPermissionWithCheck(MainActivity.this);
 					} else {
@@ -143,7 +144,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 			} else {
 				LocationRequest locationRequest = createLocationRequest();
 				LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
-				//showMessage(getString(R.string.could_not_get_last_location));
 			}
 		} catch (SecurityException e) {
 			showMessage(getString(R.string.could_not_get_last_location));
@@ -252,7 +252,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 	void grantWriteExternalStoragePermission() {
 		createWhateverDirectory();
 		// TODO show go to settings dialog
-		// TODO save never ask to shared preferences
+		SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
+		editor.putBoolean(KEY_NEVER_ASK_ACCESS_COARSE_LOCATION, true);
+		editor.apply();
 	}
 
 	@OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -264,6 +266,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 	void onWriteExternalStoragePermissionNeverAsk() {
 		showMessage(getString(R.string.permission_never_ask));
 		// TODO show go to settings dialog
-		// TODO save never ask to shared preferences
+		SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
+		editor.putBoolean(KEY_NEVER_ASK_WRITE_EXTERNAL_STORAGE, true);
+		editor.apply();
 	}
 }
