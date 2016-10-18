@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -29,18 +30,24 @@ import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.PermissionUtils;
 import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
 	public static final String directoryName = "WHATEVER";
+	public static final String KEY_NEVER_ASK_COARSE_LOCATION = "COARSE_LOCATION";
+	public static final String KEY_NEVER_ASK_WRITE_EXTERNAL_STORAGE = "WRITE_EXTERNAL_STORAGE";
 
 	private GoogleApiClient googleApiClient;
 
 	private FloatingActionButton fab;
 	private Button buttonDoYourThing;
 	private Button buttonDoWhatever;
+
+	private boolean showPrimerDialogForYourThing = true;
+	private boolean showPrimerDialogForWhatever = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +79,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 		buttonDoYourThing.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				MainActivityPermissionsDispatcher.grantAccessCoarseLocationPermissionWithCheck(MainActivity.this);
+				if (PermissionUtils.hasSelfPermissions(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+					grantAccessCoarseLocationPermission();
+				} else {
+					boolean shouldShowRationale = PermissionUtils.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION);
+					boolean neverAsk = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).getBoolean(KEY_NEVER_ASK_COARSE_LOCATION, false);
+					if (shouldShowRationale || neverAsk || !showPrimerDialogForYourThing) {
+						MainActivityPermissionsDispatcher.grantAccessCoarseLocationPermissionWithCheck(MainActivity.this);
+					} else {
+						// TODO show primer dialog
+					}
+				}
 			}
 		});
 
@@ -80,7 +97,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 		buttonDoWhatever.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				MainActivityPermissionsDispatcher.grantWriteExternalStoragePermissionWithCheck(MainActivity.this);
+				if (PermissionUtils.hasSelfPermissions(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+					grantWriteExternalStoragePermission();
+				} else {
+					boolean shouldShowRationale = PermissionUtils.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+					boolean neverAsk = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).getBoolean(KEY_NEVER_ASK_WRITE_EXTERNAL_STORAGE, false);
+					if (shouldShowRationale || neverAsk || !showPrimerDialogForWhatever) {
+						MainActivityPermissionsDispatcher.grantWriteExternalStoragePermissionWithCheck(MainActivity.this);
+					} else {
+						// TODO show primer dialog
+					}
+				}
 			}
 		});
 
@@ -197,10 +224,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 	@OnPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION)
 	void onAccessCoarseLocationPermissionDenied() {
 		showMessage(getString(R.string.permission_denied));
+		// TODO show go to settings dialog
 	}
 
 	@OnNeverAskAgain(Manifest.permission.ACCESS_COARSE_LOCATION)
 	void onAccessCoarseLocationPermissionNeverAsk() {
+		showMessage(getString(R.string.permission_never_ask));
+		// TODO show go to settings dialog
 	}
 
 	@OnShowRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -221,6 +251,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 	@NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 	void grantWriteExternalStoragePermission() {
 		createWhateverDirectory();
+		// TODO show go to settings dialog
+		// TODO save never ask to shared preferences
 	}
 
 	@OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -231,5 +263,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 	@OnNeverAskAgain(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 	void onWriteExternalStoragePermissionNeverAsk() {
 		showMessage(getString(R.string.permission_never_ask));
+		// TODO show go to settings dialog
+		// TODO save never ask to shared preferences
 	}
 }
