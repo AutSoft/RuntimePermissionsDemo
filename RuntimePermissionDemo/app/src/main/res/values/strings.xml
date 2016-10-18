@@ -55,5 +55,11 @@
 	<string name="directory_not_created">Directory not created</string>
 	<string name="directory_created">Directory %s created in Downloads</string>
 	<string name="lat_long">Lat: %1$f, Long: %2$f</string>
+	<string name="action_request">Request</string>
+	<string name="action_cancel">Cancel</string>
+	<string name="rationale_access_coarse_location">rationale ACCESS_COARSE_LOCATION message</string>
+	<string name="rationale_write_external_storage">rationale WRITE_EXTERNAL_STORAGE message</string>
+	<string name="permission_denied">permission denied</string>
+	<string name="permission_never_ask">permission never ask</string>
 
 </resources>

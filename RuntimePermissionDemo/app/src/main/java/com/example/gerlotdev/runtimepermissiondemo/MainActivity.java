@@ -15,7 +15,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -166,14 +165,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 	private void showRationaleDialog(String message, DialogInterface.OnClickListener positiveListener, DialogInterface.OnClickListener negativeListener) {
 		new AlertDialog.Builder(this)
 				.setMessage(message)
-				.setPositiveButton("Request", positiveListener)
-				.setNegativeButton("Cancel", negativeListener)
+				.setPositiveButton(R.string.action_request, positiveListener)
+				.setNegativeButton(R.string.action_cancel, negativeListener)
 				.show();
 	}
 
 	@OnShowRationale(Manifest.permission.ACCESS_COARSE_LOCATION)
 	void showRationaleForAccessCoarseLocation(final PermissionRequest request) {
-		showRationaleDialog("rationaleACCESS_COARSE_LOCATION message", new DialogInterface.OnClickListener() {
+		showRationaleDialog(getString(R.string.rationale_access_coarse_location), new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				request.proceed();
@@ -197,17 +196,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
 	@OnPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION)
 	void onAccessCoarseLocationPermissionDenied() {
-		Toast.makeText(this, "permission denied", Toast.LENGTH_SHORT).show();
+		showMessage(getString(R.string.permission_denied));
 	}
 
 	@OnNeverAskAgain(Manifest.permission.ACCESS_COARSE_LOCATION)
 	void onAccessCoarseLocationPermissionNeverAsk() {
-		Toast.makeText(this, "permission never ask", Toast.LENGTH_SHORT).show();
 	}
 
 	@OnShowRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 	void showRationaleForWriteExternalStorage(final PermissionRequest request) {
-		showRationaleDialog("rationaleWRITE_EXTERNAL_STORAGE message", new DialogInterface.OnClickListener() {
+		showRationaleDialog(getString(R.string.rationale_write_external_storage), new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				request.proceed();
@@ -227,11 +225,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
 	@OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 	void onWriteExternalStoragePermissionDenied() {
-		Toast.makeText(this, "permission denied", Toast.LENGTH_SHORT).show();
+		showMessage(getString(R.string.permission_denied));
 	}
 
 	@OnNeverAskAgain(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 	void onWriteExternalStoragePermissionNeverAsk() {
-		Toast.makeText(this, "permission never ask", Toast.LENGTH_SHORT).show();
+		showMessage(getString(R.string.permission_never_ask));
 	}
 }
