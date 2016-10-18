@@ -2,11 +2,14 @@ package com.example.gerlotdev.runtimepermissiondemo;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -224,13 +227,37 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 	@OnPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION)
 	void onAccessCoarseLocationPermissionDenied() {
 		showMessage(getString(R.string.permission_denied));
-		// TODO show go to settings dialog
+
+		new AlertDialog.Builder(this)
+				.setMessage(R.string.need_to_grant_location_permission)
+				.setPositiveButton(R.string.action_go_to_app_settings, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						startInstalledAppDetailsActivity();
+					}
+				})
+				.setNegativeButton(R.string.action_cancel, null)
+				.show();
 	}
 
 	@OnNeverAskAgain(Manifest.permission.ACCESS_COARSE_LOCATION)
 	void onAccessCoarseLocationPermissionNeverAsk() {
 		showMessage(getString(R.string.permission_never_ask));
-		// TODO show go to settings dialog
+
+		new AlertDialog.Builder(this)
+				.setMessage(R.string.need_to_grant_location_permission)
+				.setPositiveButton(R.string.action_go_to_app_settings, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						startInstalledAppDetailsActivity();
+					}
+				})
+				.setNegativeButton(R.string.action_cancel, null)
+				.show();
+
+		SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
+		editor.putBoolean(KEY_NEVER_ASK_ACCESS_COARSE_LOCATION, true);
+		editor.apply();
 	}
 
 	@OnShowRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -251,23 +278,35 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 	@NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 	void grantWriteExternalStoragePermission() {
 		createWhateverDirectory();
-		// TODO show go to settings dialog
-		SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
-		editor.putBoolean(KEY_NEVER_ASK_ACCESS_COARSE_LOCATION, true);
-		editor.apply();
 	}
 
 	@OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 	void onWriteExternalStoragePermissionDenied() {
 		showMessage(getString(R.string.permission_denied));
+
+		buttonDoWhatever.setEnabled(false);
 	}
 
 	@OnNeverAskAgain(Manifest.permission.WRITE_EXTERNAL_STORAGE)
 	void onWriteExternalStoragePermissionNeverAsk() {
 		showMessage(getString(R.string.permission_never_ask));
-		// TODO show go to settings dialog
+
+		buttonDoWhatever.setEnabled(false);
+
 		SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
 		editor.putBoolean(KEY_NEVER_ASK_WRITE_EXTERNAL_STORAGE, true);
 		editor.apply();
 	}
+
+	private void startInstalledAppDetailsActivity() {
+		final Intent intent = new Intent();
+		intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+		intent.addCategory(Intent.CATEGORY_DEFAULT);
+		intent.setData(Uri.parse("package:" + getPackageName()));
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+		intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+		startActivity(intent);
+	}
+
 }

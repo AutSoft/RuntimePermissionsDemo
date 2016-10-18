@@ -61,5 +61,7 @@
 	<string name="rationale_write_external_storage">rationale WRITE_EXTERNAL_STORAGE message</string>
 	<string name="permission_denied">permission denied</string>
 	<string name="permission_never_ask">permission never ask</string>
+	<string name="need_to_grant_location_permission">You need to grant the Location permission manually in the app settings.</string>
+	<string name="action_go_to_app_settings">Go to App Settings</string>
 
 </resources>
