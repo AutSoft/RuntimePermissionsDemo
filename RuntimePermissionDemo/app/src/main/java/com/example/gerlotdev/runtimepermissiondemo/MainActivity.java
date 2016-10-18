@@ -16,13 +16,15 @@ import android.widget.Button;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
 import java.io.File;
 
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
-	public static final String directoryName = "HATEVER";
+	public static final String directoryName = "WHATEVER";
 
 	private GoogleApiClient googleApiClient;
 
@@ -101,23 +103,40 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 	}
 
 	private void getLastLocation() {
-		Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(
-				googleApiClient);
-		if (lastLocation != null) {
-			showMessage(String.format(getResources().getString(R.string.lat_long), lastLocation.getLatitude(), lastLocation.getLongitude()));
-			googleApiClient.disconnect();
-		} else {
+		try {
+			Location lastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+			if (lastLocation != null) {
+				showMessage(String.format(getResources().getString(R.string.lat_long), lastLocation.getLatitude(), lastLocation.getLongitude()));
+				googleApiClient.disconnect();
+			} else {
+				LocationRequest locationRequest = createLocationRequest();
+				LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+				//showMessage(getString(R.string.could_not_get_last_location));
+			}
+		} catch (SecurityException e) {
 			showMessage(getString(R.string.could_not_get_last_location));
 		}
 	}
 
+	protected LocationRequest createLocationRequest() {
+		LocationRequest mLocationRequest = new LocationRequest();
+		mLocationRequest.setInterval(120000);
+		mLocationRequest.setFastestInterval(30000);
+		mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+		return mLocationRequest;
+	}
+
+
 	private void createWhateverDirectory() {
 		File file = new File(Environment.getExternalStoragePublicDirectory(
 				Environment.DIRECTORY_DOWNLOADS), directoryName);
-		if (!file.mkdirs()) {
-			showMessage(getString(R.string.directory_not_created));
-		} else {
+		if (file.exists()) {
+			file.delete();
+		}
+		if (file.mkdir()) {
 			showMessage(String.format(getResources().getString(R.string.directory_created), directoryName));
+		} else {
+			showMessage(getString(R.string.directory_not_created));
 		}
 	}
 
@@ -125,6 +144,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 		Snackbar snackbar = Snackbar.make(fab, message, Snackbar.LENGTH_LONG);
 		snackbar.getView().setBackgroundColor(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
 		snackbar.show();
+	}
+
+	@Override
+	public void onLocationChanged(Location location) {
+		showMessage(String.format(getResources().getString(R.string.lat_long), location.getLatitude(), location.getLongitude()));
 	}
 
 }
