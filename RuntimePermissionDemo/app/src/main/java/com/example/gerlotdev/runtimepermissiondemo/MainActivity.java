@@ -249,17 +249,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 	@OnPermissionDenied(Manifest.permission.ACCESS_COARSE_LOCATION)
 	void onAccessCoarseLocationPermissionDenied() {
 		showMessage(getString(R.string.permission_denied));
-
-		new AlertDialog.Builder(this)
-				.setMessage(R.string.need_to_grant_location_permission)
-				.setPositiveButton(R.string.action_go_to_app_settings, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						startInstalledAppDetailsActivity();
-					}
-				})
-				.setNegativeButton(R.string.action_cancel, null)
-				.show();
 	}
 
 	@OnNeverAskAgain(Manifest.permission.ACCESS_COARSE_LOCATION)
