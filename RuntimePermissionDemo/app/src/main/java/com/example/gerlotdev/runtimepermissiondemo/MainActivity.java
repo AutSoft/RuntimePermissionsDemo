@@ -91,7 +91,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 					if (shouldShowRationale || neverAsk || !showPrimerDialogForYourThing) {
 						MainActivityPermissionsDispatcher.grantAccessCoarseLocationPermissionWithCheck(MainActivity.this);
 					} else {
-						// TODO show primer dialog
+						new AlertDialog.Builder(MainActivity.this)
+								.setMessage("You will need the Location permission to use this feature.")
+								.setPositiveButton(R.string.action_request, new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog, int which) {
+										MainActivityPermissionsDispatcher.grantAccessCoarseLocationPermissionWithCheck(MainActivity.this);
+									}
+								})
+								.show();
 					}
 				}
 			}
@@ -109,7 +117,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 					if (shouldShowRationale || neverAsk || !showPrimerDialogForWhatever) {
 						MainActivityPermissionsDispatcher.grantWriteExternalStoragePermissionWithCheck(MainActivity.this);
 					} else {
-						// TODO show primer dialog
+						new AlertDialog.Builder(MainActivity.this)
+								.setMessage("You will need the Files permission to use this feature.")
+								.setPositiveButton(R.string.action_request, new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(DialogInterface dialog, int which) {
+										MainActivityPermissionsDispatcher.grantWriteExternalStoragePermissionWithCheck(MainActivity.this);
+									}
+								})
+								.show();
 					}
 				}
 			}
